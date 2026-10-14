@@ -9,6 +9,7 @@ import {
 
 const homePayload = {
   type: "block_actions",
+  trigger_id: "123.456.abcdef",
   container: { type: "view", view_id: "V123" },
   view: { id: "V123", type: "home" },
   actions: [
@@ -36,9 +37,9 @@ test("rejects message and modal block actions", () => {
 });
 
 test("filters actions by prefix", () => {
-  assert.equal(matchesActionIdPrefix(homePayload), true);
   assert.equal(matchesActionIdPrefix(homePayload, "pam_access_"), true);
   assert.equal(matchesActionIdPrefix(homePayload, "sandbox_"), false);
+  assert.equal(matchesActionIdPrefix(homePayload, ""), false);
 });
 
 test("ignores malformed action IDs", () => {
@@ -49,4 +50,10 @@ test("ignores malformed action IDs", () => {
 
   assert.deepEqual(appHomeActionIds(payload), []);
   assert.equal(matchesActionIdPrefix(payload, "pam_access_"), false);
+});
+
+test("requires a trigger ID", () => {
+  const payload = { ...homePayload, trigger_id: "" };
+
+  assert.equal(isAppHomeBlockAction(payload), false);
 });

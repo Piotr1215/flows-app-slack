@@ -18,10 +18,7 @@ export async function handleAppHomeInteractionSubscriptions(payload: any) {
     typeIds: ["appHomeInteractionSubscription"],
   });
   const relevantBlocks = subscriptionBlocks.blocks.filter((block) =>
-    matchesActionIdPrefix(
-      payload,
-      block.config.actionIdPrefix as string | undefined,
-    ),
+    matchesActionIdPrefix(payload, block.config.actionIdPrefix as string),
   );
 
   if (relevantBlocks.length > 0) {
@@ -51,14 +48,14 @@ export const appHomeInteractionSubscription: AppBlock = {
     actionIdPrefix: {
       name: "Action ID Prefix",
       description:
-        "If specified, only Home actions whose action_id starts with this value are emitted.",
+        "Only Home actions whose action_id starts with this value are emitted.",
       type: "string",
-      required: false,
+      required: true,
     },
   },
   async onInternalMessage({ block, message }) {
     const payload = message.body;
-    const actionIdPrefix = block.config.actionIdPrefix as string | undefined;
+    const actionIdPrefix = block.config.actionIdPrefix as string;
 
     if (
       !isAppHomeBlockAction(payload) ||

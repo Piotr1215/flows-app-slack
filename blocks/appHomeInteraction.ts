@@ -2,7 +2,9 @@ export function isAppHomeBlockAction(payload: any): boolean {
   return (
     payload?.type === "block_actions" &&
     payload?.container?.type === "view" &&
-    payload?.view?.type === "home"
+    payload?.view?.type === "home" &&
+    typeof payload?.trigger_id === "string" &&
+    payload.trigger_id.length > 0
   );
 }
 
@@ -18,9 +20,9 @@ export function appHomeActionIds(payload: any): string[] {
 
 export function matchesActionIdPrefix(
   payload: any,
-  actionIdPrefix?: string,
+  actionIdPrefix: string,
 ): boolean {
-  if (!actionIdPrefix) return true;
+  if (!actionIdPrefix) return false;
   return appHomeActionIds(payload).some((actionId) =>
     actionId.startsWith(actionIdPrefix),
   );
